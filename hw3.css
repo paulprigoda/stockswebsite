@@ -1,0 +1,45 @@
+body{
+    background: Tan;
+    margin: 50px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align: center;
+}
+
+h1{
+	text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+div{
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+    width: 800px;
+    height: 400px;
+    
+}
+
+p{
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+button{
+    display: inline-block;
+    font-size: 16px;
+}
+
+#netflix{
+    background: red;
+}
+
+#apple{
+    background: green;
+}
+
+#facebook{
+    background: blue;
+}

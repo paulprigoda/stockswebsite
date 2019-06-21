@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+
+<!-- PT: 50%/50% || Nick: 50%/50% -->
+
+<html>
+    <head>
+    <link rel="stylesheet" href="hw3.css">
+	<script src="js/Chart.js"></script>
+    
+    <script>
+        var canvContext;
+        var canvContext2;
+        
+        var url1 = "apple.json";
+        var url2 = "netf.json";
+        var url3 = "fb.json";
+        
+        var volumeArray = [0,0,0];
+        var closeArray = [0, 0, 0];
+        
+        var microUp = false;
+        var sonyUp = false;
+        var ninUp = false;
+        
+        var myGraph;
+        var myGraph2;
+        
+        var volData = {
+            labels : [],
+            datasets : [
+                {
+                    backgroundColor : "rgba(0,200,0,0.5)",
+                    data : []
+                },
+                {
+                    backgroundColor : "rgba(200,0,0,0.5)",
+                    data : []
+                },
+                {
+                    backgroundColor : "rgba(0,0,200,0.5)",
+                    data : []
+                }
+            ]
+        };
+        
+        var closeData = {
+            labels : [],
+            datasets : [
+                {
+                    backgroundColor : "rgba(0,200,0,0.5)",
+                    data : []
+                },
+                {
+                    backgroundColor : "rgba(200,0,0,0.5)",
+                    data : []
+                },
+                {
+                    backgroundColor : "rgba(0,0,200,0.5)",
+                    data : []
+                }
+            ]
+        };
+        
+        
+        function prepareContext(){
+			Chart.defaults.global.tooltips.enabled = false;  //turn tooltips off
+            Chart.defaults.global.responsive = true;         //make charts responsive
+            Chart.defaults.global.maintainAspectRatio = false;
+            Chart.defaults.global.legend.display = false;    //don't display legends
+            
+			canvContext = document.getElementById("canvas").getContext("2d");
+            canvContext2 = document.getElementById("canvas2").getContext("2d");// get the context to draw on
+		}
+        
+        function getData(url0, i){
+            var jsonhttp = new XMLHttpRequest();
+            jsonhttp.onreadystatechange = function() {
+            if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
+                myObj = JSON.parse(jsonhttp.responseText);
+                myObj.Date.reverse();
+                myObj.Volume.reverse();
+                myObj.Close.reverse();
+                volumeArray[i] = myObj.Volume;
+                closeArray[i] = myObj.Close;
+                for(var j = 0; j < 252; j++){
+                    volumeArray[i][j] = volumeArray[i][j]/1000000;
+                }
+                closeData.labels = myObj.Date;
+                volData.labels = myObj.Date;
+                if (i == 0){
+                    toggleApple();
+                }
+            }
+        };
+        jsonhttp.open("GET", url0, true);
+        jsonhttp.send();
+        }
+        
+        function drawChart(){
+			if (typeof myGraph != "undefined")
+				myGraph.destroy();
+            if (typeof myGraph2 != "undefined")
+				myGraph2.destroy();
+                myGraph = new Chart(canvContext,{ type:'line', data:closeData}); 
+                myGraph2 = new Chart(canvContext2,{ type:'bar', data:volData});       
+	   }
+        
+        function toggleApple(){
+            microUp = !microUp;
+            if (microUp){
+                console.log(closeArray[0])
+                closeData.datasets[0].data = closeArray[0];
+                volData.datasets[0].data = volumeArray[0];
+                console.log("jeff")
+            }
+            else{
+                closeData.datasets[0].data = [];
+                volData.datasets[0].data = [];
+            }
+            drawChart();
+        }
+        
+        function toggleNetf(){
+            sonyUp = !sonyUp;
+            if (sonyUp){
+                closeData.datasets[1].data = closeArray[1];
+                volData.datasets[1].data = volumeArray[1];
+            }
+            else{
+                closeData.datasets[1].data = [];
+                volData.datasets[1].data = [];
+            }
+            drawChart();
+        }
+        
+        function toggleFb(){
+            ninUp = !ninUp;
+            if (ninUp){
+                closeData.datasets[2].data = closeArray[2];
+                volData.datasets[2].data = volumeArray[2]; 
+            }
+            else{
+                closeData.datasets[2].data = [];
+                volData.datasets[2].data = [];
+            }
+            drawChart();
+        }
+        
+    
+    
+    
+    </script>
+    </head>
+    <body onload="prepareContext()">
+        
+        <h1><center>-- Stocks --</center></h1>
+        
+        <div id="canvasDiv">
+            <canvas id="canvas"></canvas>
+
+        </div>
+        
+        <div id="canvasDiv2">
+		  <canvas id="canvas2"></canvas>
+    
+	    </div>
+        
+        <button id="apple" type = "button" onClick = "toggleApple()" >APLE</button>
+        <button id="netflix" type = "button" onClick = "toggleNetf()" >NETF</button>
+        <button id="facebook" type = "button" onClick = "toggleFb()" >FB</button>
+        
+        <script>
+        getData(url3, 2);
+        getData(url2, 1);
+        getData(url1, 0);
+        
+        </script>
+        
+    </body>
+
+</html>
